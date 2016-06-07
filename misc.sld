@@ -1,11 +1,15 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis misc)
-  (import (scheme base))
-  (export define-integrable define-macro when aif awhen
-          gensym box unbox box! permutations)
+  (import
+    (scheme base))
+  (export
+    ;; define-integrable define-macro aif awhen
+    box box! gensym  permutations unbox
+    ;; provided by scheme base:
+    when
+    )
   (begin
     ;; Define-integrable is similar to define for procedure definitions
     ;; except that the code for the procedure is integrated (some people
@@ -21,32 +25,32 @@
     ;; Define-integrable appears in Section 8.4 of R. Kent Dybvig’s book
     ;; The Scheme Programming Language:
 
-    (define-syntax (define-integrable x)
-      (define (make-residual-name name)
-        (datum->syntax-object name
-          (string->symbol
-            (string-append "residual-"
-              (symbol->string (syntax-object->datum name))))))
-      (syntax-case x (lambda)
-        ((_ (name . args) . body)
-          (syntax (define-integrable name (lambda args . body))))
-        ((_ name (lambda formals form1 form2 ...))
-          (identifier? (syntax name))
-          (with-syntax ((xname (make-residual-name (syntax name))))
-            (syntax
-              (begin
-                (define-syntax (name x)
-                  (syntax-case x ()
-                    (_ (identifier? x) (syntax xname))
-                    ((_ arg (... ...))
-                      (syntax
-                        ((fluid-let-syntax
-                           ((name (identifier-syntax xname)))
-                           (lambda formals form1 form2 ...))
-                          arg (... ...))))))
-                (define xname
-                  (fluid-let-syntax ((name (identifier-syntax xname)))
-                    (lambda formals form1 form2 ...)))))))))
+    ;; (define-syntax (define-integrable x)
+    ;;   (define (make-residual-name name)
+    ;;     (datum->syntax-object name
+    ;;       (string->symbol
+    ;;         (string-append "residual-"
+    ;;           (symbol->string (syntax-object->datum name))))))
+    ;;   (syntax-case x (lambda)
+    ;;     ((_ (name . args) . body)
+    ;;       (syntax (define-integrable name (lambda args . body))))
+    ;;     ((_ name (lambda formals form1 form2 ...))
+    ;;       (identifier? (syntax name))
+    ;;       (with-syntax ((xname (make-residual-name (syntax name))))
+    ;;         (syntax
+    ;;           (begin
+    ;;             (define-syntax (name x)
+    ;;               (syntax-case x ()
+    ;;                 (_ (identifier? x) (syntax xname))
+    ;;                 ((_ arg (... ...))
+    ;;                   (syntax
+    ;;                     ((fluid-let-syntax
+    ;;                        ((name (identifier-syntax xname)))
+    ;;                        (lambda formals form1 form2 ...))
+    ;;                       arg (... ...))))))
+    ;;             (define xname
+    ;;               (fluid-let-syntax ((name (identifier-syntax xname)))
+    ;;                 (lambda formals form1 form2 ...)))))))))
 
     ;; Scheme provides hygienic macros (though syntax-case provides a way
     ;; to safely bend hygiene); Common Lisp, by comparison, provides
@@ -55,30 +59,28 @@
     ;; provides numerous examples in his book On Lisp. Define-macro
     ;; provides unhygienic macros for Scheme:
 
-    (define-syntax (define-macro x)
-      (syntax-case x ()
-        ((_ (name . args) . body)
-          (syntax (define-macro name (lambda args . body))))
-        ((_ name transformer)
-          (syntax
-            (define-syntax (name y)
-              (syntax-case y ()
-                ((_ . args)
-                  (datum->syntax-object
-                    (syntax _)
-                    (apply transformer
-                      (syntax-object->datum (syntax args)))))))))))
+    ;; (define-syntax (define-macro x)
+    ;;   (syntax-case x ()
+    ;;     ((_ (name . args) . body)
+    ;;       (syntax (define-macro name (lambda args . body))))
+    ;;     ((_ name transformer)
+    ;;       (syntax
+    ;;         (define-syntax (name y)
+    ;;           (syntax-case y ()
+    ;;             ((_ . args)
+    ;;               (datum->syntax-object
+    ;;                 (syntax _)
+    ;;                 (apply transformer
+    ;;                   (syntax-object->datum (syntax args)))))))))))
 
     ;; The following examples are adapted from Graham’s book:
 
-    (define-macro (when test . body) `(cond (,test . ,body)))
+    ;; (define-macro (aif test-form then-else-forms)
+    ;;   `(let ((it ,test-form))
+    ;;      (if it ,then-else-forms)))
 
-    (define-macro (aif test-form then-else-forms)
-      `(let ((it ,test-form))
-         (if it ,then-else-forms)))
-
-    (define-macro (awhen pred? . body)
-      `(aif ,pred? (begin ,@body)))
+    ;; (define-macro (awhen pred? . body)
+    ;;   `(aif ,pred? (begin ,@body)))
 
     ;; When a macro breaks hygiene, it is sometimes useful to generate a
     ;; unique symbol, which can be used as a variable name or in some
