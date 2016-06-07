@@ -19,12 +19,12 @@
     (praxis math)
     (praxis string)
     (praxis random)
+    (praxis misc)
 
     ; (praxis dictionary)
     ; (praxis match)
     ; (praxis structure)
     ; (praxis generator)
-    ; (praxis misc)
     )
   (export
     ;; Lists
