@@ -1,5 +1,4 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis prelude)
@@ -61,7 +60,7 @@
     ;; Strings
     string-index string-downcase string-upcase string-split string-join
     string-find
-
+b
     ;; Sorting
     sort merge dosort domerge unique uniq-c vector-sort!
 
@@ -85,7 +84,7 @@
     fortune shuffle
 
     ;; Control Flow
-    when unless while let-values let-values-help
+    when unless while let-values
 
     ;; Generators
     define-generator

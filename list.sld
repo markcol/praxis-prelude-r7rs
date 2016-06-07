@@ -1,18 +1,23 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 ;; Lists are ubiquitous in Scheme, so it is useful to have available a
 ;; collection of utility functions that operate on lists.
 
 (define-library (praxis list)
-  (import (scheme base)
-          (scheme cxr))
-  (export take drop split take-while drop-while split-while
-          cons* fold-left fold-right range mappend iterate
-          filter remove flatten all? any? zip cross sum maximum-by)
+  (import
+    (scheme base)
+    (scheme cxr))
+  (export
+    all? any? cons* cross drop drop-while filter flatten
+    fold-left fold-right iterate mappend maximum-by range
+    remove split split-while take take-while zip
+    ;; provided by 'scheme base':
+    make-list sum
+    )
 
   (begin
+
     ;; Take returns a newly-allocated list containing the first n elements
     ;; of the list xs; if xs has less than n elements, return all of them.
     (define (take n xs)
