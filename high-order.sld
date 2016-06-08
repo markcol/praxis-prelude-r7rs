@@ -1,20 +1,16 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis high-order)
   (import (scheme base))
-  (export
-    identity constant fst snd compose complement swap
-    left-section right-section curried-lambda define-curried
-    )
+  (export identity constant fst snd compose complement swap
+	  left-section right-section curried-lambda define-curried)
 
   (begin
     ;; Identity returns it only argument and constant returns a function
     ;; that, when called, always returns the same value regardless of its
     ;; argument. Both functions are useful as recursive bases when writing
     ;; higher-order functions.
-
     (define (identity x) x)
 
     (define (constant x) (lambda ys x))
@@ -38,16 +34,16 @@
     (define (compose . fns)
       (let comp ((fns fns))
         (cond
-          ((null? fns) 'error)
-          ((null? (cdr fns)) (car fns))
-          (else
-            (lambda args
-              (call-with-values
+	 ((null? fns) 'error)
+	 ((null? (cdr fns)) (car fns))
+	 (else
+	  (lambda args
+	    (call-with-values
                 (lambda ()
                   (apply
-                    (comp (cdr fns))
-                    args))
-                (car fns)))))))
+		   (comp (cdr fns))
+		   args))
+	      (car fns)))))))
 
     ;; Complement takes a predicate and returns a new predicate that
     ;; returns #t where the original returned #f and #f where the original
@@ -94,17 +90,17 @@
     (define-syntax curried-lambda
       (syntax-rules ()
         ((_ () body body* ...)
-          (begin body body* ...))
+	 (begin body body* ...))
         ((_ (arg arg* ...) body body* ...)
-          (lambda (arg)
-            (curried-lambda (arg* ...)
-              body body* ...)))))
+	 (lambda (arg)
+	   (curried-lambda (arg* ...)
+			   body body* ...)))))
 
     (define-syntax define-curried
       (syntax-rules ()
         ((_ (func arg ...) body body* ...)
-          (define func
-            (curried-lambda (arg ...)
-              body body* ...)))))
+	 (define func
+	   (curried-lambda (arg ...)
+			   body body* ...)))))
 
     ))

@@ -1,5 +1,4 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis bit)
@@ -23,34 +22,35 @@
 
     (define (logand a b)
       (if (or (zero? a) (zero? b)) 0
-        (+ (* (logand (floor (/ a 2)) (floor (/ b 2))) 2)
-          (if (or (even? a) (even? b)) 0 1))))
+	  (+ (* (logand (floor (/ a 2)) (floor (/ b 2))) 2)
+	     (if (or (even? a) (even? b)) 0 1))))
 
     (define (logior x y)
       (cond ((= x y) x)
-        ((zero? x) y)
-        ((zero? y) x)
-        (else
-          (+ (* (logior (quotient x 2) (quotient y 2)) 2)
-            (if (and (even? x) (even? y)) 0 1)))))
+	    ((zero? x) y)
+	    ((zero? y) x)
+	    (else
+	     (+ (* (logior (quotient x 2) (quotient y 2)) 2)
+		(if (and (even? x) (even? y)) 0 1)))))
 
     (define (logxor a b)
       (cond ((zero? a) b)
-        ((zero? b) a)
-        (else
-          (+ (* (logxor (floor (/ a 2)) (floor (/ b 2))) 2)
-            (if (even? a)
-              (if (even? b) 0 1)
-              (if (even? b) 1 0))))))
+	    ((zero? b) a)
+	    (else
+	     (+ (* (logxor (floor (/ a 2)) (floor (/ b 2))) 2)
+		(if (even? a)
+		    (if (even? b) 0 1)
+		    (if (even? b) 1 0))))))
 
-    (define (lognot a) (- -1 a))
+    (define (lognot a)
+      (- -1 a))
 
     (define (ash int cnt)
       (if (negative? cnt)
-        (let ((n (expt 2 (- cnt))))
-          (if (negative? int)
-            (+ -1 (quotient (+ 1 int) n))
-            (quotient int n)))
-        (* (expt 2 cnt) int)))
+	  (let ((n (expt 2 (- cnt))))
+	    (if (negative? int)
+		(+ -1 (quotient (+ 1 int) n))
+		(quotient int n)))
+	  (* (expt 2 cnt) int)))
 
     ))

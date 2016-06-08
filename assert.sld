@@ -1,11 +1,9 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis assert)
   (import (scheme base))
   (export assert)
-
   (begin
     ;; The assert macro is useful when testing programs. The syntax
     ;; (assert expr result) computes expr and result; if they are the
@@ -20,8 +18,8 @@
     (define-syntax assert
       (syntax-rules ()
         ((assert expr result)
-          (if (not (equal? expr result))
-            (for-each display `(
+	 (if (not (equal? expr result))
+	     (for-each display `(
                                  #\newline "failed assertion:" #\newline
                                  expr #\newline "expected: " ,result
                                  #\newline "returned: " ,expr #\newline))))))

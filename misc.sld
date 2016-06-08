@@ -2,14 +2,12 @@
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis misc)
-  (import
-    (scheme base))
-  (export
-    ;; define-integrable define-macro aif awhen
-    box box! gensym  permutations unbox
-    ;; provided by scheme base:
-    when
-    )
+  (import (scheme base))
+  (export box box! gensym  permutations unbox
+	  ;; define-integrable define-macro aif awhen
+	  ;; provided by scheme base:
+	  when)
+  
   (begin
     ;; Define-integrable is similar to define for procedure definitions
     ;; except that the code for the procedure is integrated (some people

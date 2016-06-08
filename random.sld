@@ -1,10 +1,9 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis random)
   (import (scheme base)
-    (scheme cxr))
+	  (scheme cxr))
   (export rand randint mod-diff flip-cycle init-rand next-rand unif-rand
           fortune shuffle)
 
@@ -77,7 +76,7 @@
 
       (define (next-rand)
         (if (negative? (vector-ref a fptr)) (flip-cycle)
-          (let ((next (vector-ref a fptr))) (set! fptr (- fptr 1)) next)))
+	    (let ((next (vector-ref a fptr))) (set! fptr (- fptr 1)) next)))
 
       (define (unif-rand m)
         (let ((t (- two31 (modulo two31 m))))
@@ -88,24 +87,24 @@
 
       (set! rand (lambda seed
                    (cond ((null? seed) (/ (next-rand) two31))
-                     ((eq? (car seed) 'get) (cons fptr (vector->list a)))
-                     ((eq? (car seed) 'set) (set! fptr (caadr seed))
-                       (set! a (list->vector (cdadr seed))))
-                     (else (/ (init-rand (modulo (numerator
-                                                   (exact (car seed))) two31)) two31)))))
+			 ((eq? (car seed) 'get) (cons fptr (vector->list a)))
+			 ((eq? (car seed) 'set) (set! fptr (caadr seed))
+			  (set! a (list->vector (cdadr seed))))
+			 (else (/ (init-rand (modulo (numerator
+						      (exact (car seed))) two31)) two31)))))
       (set! randint (lambda args
                       (cond ((null? (cdr args))
-                              (if (< (car args) two31) (unif-rand (car args))
-                                (floor (* (next-rand) (car args)))))
-                        ((< (car args) (cadr args))
-                          (let ((span (- (cadr args) (car args))))
-                            (+ (car args)
-                              (if (< span two31) (unif-rand span)
-                                (floor (* (next-rand) span))))))
-                        (else (let ((span (- (car args) (cadr args))))
-                                (- (car args)
-                                  (if (< span two31) (unif-rand span)
-                                    (floor (* (next-rand) span))))))))))
+			     (if (< (car args) two31) (unif-rand (car args))
+				 (floor (* (next-rand) (car args)))))
+			    ((< (car args) (cadr args))
+			     (let ((span (- (cadr args) (car args))))
+			       (+ (car args)
+				  (if (< span two31) (unif-rand span)
+				      (floor (* (next-rand) span))))))
+			    (else (let ((span (- (car args) (cadr args))))
+				    (- (car args)
+				       (if (< span two31) (unif-rand span)
+					   (floor (* (next-rand) span))))))))))
 
     ;; Fortune selects an item randomly from a list; the first item is
     ;; selected with probability 1/1, the second item replaces the
@@ -118,16 +117,16 @@
     (define (fortune xs)
       (let loop ((n 1) (x #f) (xs xs))
         (cond ((null? xs) x)
-          ((< (rand) (/ n))
-            (loop (+ n 1) (car xs) (cdr xs)))
-          (else (loop (+ n 1) x (cdr xs))))))
+	      ((< (rand) (/ n))
+	       (loop (+ n 1) (car xs) (cdr xs)))
+	      (else (loop (+ n 1) x (cdr xs))))))
 
     ;; To shuffle a list, convert it to a vector, shuffle the vector by
     ;; Knuth’s algorithm, and convert the result back to a list:
 
     (define (shuffle x)
       (do ((v (list->vector x)) (n (length x) (- n 1)))
-        ((zero? n) (vector->list v))
+	  ((zero? n) (vector->list v))
         (let* ((r (randint n)) (t (vector-ref v r)))
           (vector-set! v r (vector-ref v (- n 1)))
           (vector-set! v (- n 1) t))))

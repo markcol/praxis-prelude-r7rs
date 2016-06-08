@@ -1,8 +1,7 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
-(define-library (praxis generators)
+(define-library (praxis generator)
   (import (scheme base))
   (export define-generator)
 
@@ -26,28 +25,28 @@
     ;; > (y)
     ;; Exception in yield123: unexpected return
 
-    (define-syntax define-generator
-      (lambda (x)
-        (syntax-case x (lambda)
-          ((stx name (lambda formals e0 e1 ...))
-            (with-syntax ((yield (datum->syntax (syntax stx) 'yield)))
-              (syntax (define name
-                        (lambda formals
-                          (let ((resume #f) (return #f))
-                            (define yield
-                              (lambda args
-                                (call-with-current-continuation
-                                  (lambda (cont)
-                                    (set! resume cont)
-                                    (apply return args)))))
-                            (lambda ()
-                              (call-with-current-continuation
-                                (lambda (cont)
-                                  (set! return cont)
-                                  (cond (resume (resume))
-                                    (else (let () e0 e1 ...)
-                                      (error 'name "unexpected return"))))))))))))
-          ((stx (name . formals) e0 e1 ...)
-            (syntax (stx name (lambda formals e0 e1 ...)))))))
+    ;; (define-syntax define-generator
+    ;;   (lambda (x)
+    ;;     (syntax-case x (lambda)
+    ;;       ((stx name (lambda formals e0 e1 ...))
+    ;;         (with-syntax ((yield (datum->syntax (syntax stx) 'yield)))
+    ;;           (syntax (define name
+    ;;                     (lambda formals
+    ;;                       (let ((resume #f) (return #f))
+    ;;                         (define yield
+    ;;                           (lambda args
+    ;;                             (call-with-current-continuation
+    ;;                               (lambda (cont)
+    ;;                                 (set! resume cont)
+    ;;                                 (apply return args)))))
+    ;;                         (lambda ()
+    ;;                           (call-with-current-continuation
+    ;;                             (lambda (cont)
+    ;;                               (set! return cont)
+    ;;                               (cond (resume (resume))
+    ;;                                 (else (let () e0 e1 ...)
+    ;;                                   (error 'name "unexpected return"))))))))))))
+    ;;       ((stx (name . formals) e0 e1 ...)
+    ;;         (syntax (stx name (lambda formals e0 e1 ...)))))))
 
     ))

@@ -1,5 +1,4 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis io)
@@ -8,12 +7,14 @@
   (export read-file for-each-input map-input fold-input filter-input)
 
   (begin
+    
     ;; Read-file returns a list of the characters in a file:
     (define (read-file file-name)
-      (with-input-from-file file-name (lambda ()
-                                        (let loop ((c (read-char)) (cs '()))
-                                          (if (eof-object? c) (reverse cs)
-                                            (loop (read-char) (cons c cs)))))))
+      (with-input-from-file file-name
+	(lambda ()
+	  (let loop ((c (read-char)) (cs '()))
+	    (if (eof-object? c) (reverse cs)
+		(loop (read-char) (cons c cs)))))))
 
     ;; The three input processors for-each-input, map-input and fold-input
     ;; operate on an input file or port in a manner similar to the way
@@ -31,33 +32,33 @@
 
     (define (for-each-input reader proc . pof)
       (let* ((f? (and (pair? pof) (string? (car pof))))
-              (p (cond (f? (open-input-file (car pof)))
-                   ((pair? pof) (car pof))
-                   (else (current-input-port)))))
+	     (p (cond (f? (open-input-file (car pof)))
+		      ((pair? pof) (car pof))
+		      (else (current-input-port)))))
         (do ((item (reader p) (reader p)))
-          ((eof-object? item)
-            (if f? (close-input-port p)))
+	    ((eof-object? item)
+	     (if f? (close-input-port p)))
           (proc item))))
 
     (define (map-input reader proc . pof)
       (let* ((f? (and (pair? pof) (string? (car pof))))
-              (p (cond (f? (open-input-file (car pof)))
-                   ((pair? pof) (car pof))
-                   (else (current-input-port)))))
+	     (p (cond (f? (open-input-file (car pof)))
+		      ((pair? pof) (car pof))
+		      (else (current-input-port)))))
         (let loop ((item (reader p)) (result '()))
           (if (eof-object? item)
-            (begin (if f? (close-input-port p)) (reverse result))
-            (loop (reader p) (cons (proc item) result))))))
+	      (begin (if f? (close-input-port p)) (reverse result))
+	      (loop (reader p) (cons (proc item) result))))))
 
     (define (fold-input reader proc base . pof)
       (let* ((f? (and (pair? pof) (string? (car pof))))
-              (p (cond (f? (open-input-file (car pof)))
-                   ((pair? pof) (car pof))
-                   (else (current-input-port)))))
+	     (p (cond (f? (open-input-file (car pof)))
+		      ((pair? pof) (car pof))
+		      (else (current-input-port)))))
         (let loop ((item (reader p)) (base base))
           (if (eof-object? item)
-            (begin (if f? (close-input-port p)) base)
-            (loop (reader p) (proc base item))))))
+	      (begin (if f? (close-input-port p)) base)
+	      (loop (reader p) (proc base item))))))
 
     ;; Filter-input is a combinator that takes a reader function and a
     ;; predicate and returns a new reader function that only passes
@@ -67,6 +68,6 @@
       (lambda args
         (let loop ((item (apply reader args)))
           (if (or (eof-object? item) (pred? item)) item
-            (loop (apply reader args))))))
+	      (loop (apply reader args))))))
 
     ))

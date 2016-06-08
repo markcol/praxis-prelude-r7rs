@@ -1,5 +1,4 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis matrix)
@@ -14,10 +13,10 @@
 
     (define (make-matrix rows columns . value)
       (do ((m (make-vector rows)) (i 0 (+ i 1)))
-        ((= i rows) m)
+	  ((= i rows) m)
         (if (null? value)
-          (vector-set! m i (make-vector columns))
-          (vector-set! m i (make-vector columns (car value))))))
+	    (vector-set! m i (make-vector columns))
+	    (vector-set! m i (make-vector columns (car value))))))
 
     (define (matrix-rows x) (vector-length x))
 
@@ -37,14 +36,14 @@
     (define-syntax for
       (syntax-rules ()
         ((for (var first past step) body ...)
-          (let ((ge? (if (< first past) >= <=)))
-            (do ((var first (+ var step)))
-              ((ge? var past))
-              body ...)))
+	 (let ((ge? (if (< first past) >= <=)))
+	   (do ((var first (+ var step)))
+	       ((ge? var past))
+	     body ...)))
         ((for (var first past) body ...)
-          (let* ((f first) (p past) (s (if (< first past) 1 -1)))
-            (for (var f p s) body ...)))
+	 (let* ((f first) (p past) (s (if (< first past) 1 -1)))
+	   (for (var f p s) body ...)))
         ((for (var past) body ...)
-          (let* ((p past)) (for (var 0 p) body ...)))))
+	 (let* ((p past)) (for (var 0 p) body ...)))))
 
     ))

@@ -1,5 +1,4 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis hash-table)
@@ -57,43 +56,43 @@
       (let ((table (make-vector size '())))
         (lambda (message . args)
           (if (eq? message 'enlist)
-            (let loop ((k 0) (result '()))
-              (if (= size k)
-                result
-                (loop (+ k 1) (append (vector-ref table k) result))))
-            (let* ((key (car args))
-                    (index (modulo (hash key) size))
-                    (bucket (vector-ref table index)))
-              (case message
-                ((lookup fetch get ref recall)
-                  (let loop ((bucket bucket))
-                    (cond ((null? bucket) oops)
-                      ((eql? (caar bucket) key) (cdar bucket))
-                      (else (loop (cdr bucket))))))
-                ((insert insert! ins ins! set set! store store! install install!)
-                  (vector-set! table index
-                    (let loop ((bucket bucket))
-                      (cond ((null? bucket)
-                              (list (cons key (cadr args))))
-                        ((eql? (caar bucket) key)
-                          (cons (cons key (cadr args)) (cdr bucket)))
-                        (else (cons (car bucket) (loop (cdr bucket))))))))
-                ((delete delete! del del! remove remove!)
-                  (vector-set! table index
-                    (let loop ((bucket bucket))
-                      (cond ((null? bucket) '())
-                        ((eql? (caar bucket) key)
-                          (cdr bucket))
-                        (else (cons (car bucket) (loop (cdr bucket))))))))
-                ((update update!)
-                  (vector-set! table index
-                    (let loop ((bucket bucket))
-                      (cond ((null? bucket)
-                              (list (cons key (caddr args))))
-                        ((eql? (caar bucket) key)
-                          (cons (cons key ((cadr args) key (cdar bucket))) (cdr bucket)))
-                        (else (cons (car bucket) (loop (cdr bucket))))))))
-                (else (error 'hash-table "unrecognized message")) ))))))
+	      (let loop ((k 0) (result '()))
+		(if (= size k)
+		    result
+		    (loop (+ k 1) (append (vector-ref table k) result))))
+	      (let* ((key (car args))
+		     (index (modulo (hash key) size))
+		     (bucket (vector-ref table index)))
+		(case message
+		  ((lookup fetch get ref recall)
+		   (let loop ((bucket bucket))
+		     (cond ((null? bucket) oops)
+			   ((eql? (caar bucket) key) (cdar bucket))
+			   (else (loop (cdr bucket))))))
+		  ((insert insert! ins ins! set set! store store! install install!)
+		   (vector-set! table index
+				(let loop ((bucket bucket))
+				  (cond ((null? bucket)
+					 (list (cons key (cadr args))))
+					((eql? (caar bucket) key)
+					 (cons (cons key (cadr args)) (cdr bucket)))
+					(else (cons (car bucket) (loop (cdr bucket))))))))
+		  ((delete delete! del del! remove remove!)
+		   (vector-set! table index
+				(let loop ((bucket bucket))
+				  (cond ((null? bucket) '())
+					((eql? (caar bucket) key)
+					 (cdr bucket))
+					(else (cons (car bucket) (loop (cdr bucket))))))))
+		  ((update update!)
+		   (vector-set! table index
+				(let loop ((bucket bucket))
+				  (cond ((null? bucket)
+					 (list (cons key (caddr args))))
+					((eql? (caar bucket) key)
+					 (cons (cons key ((cadr args) key (cdar bucket))) (cdr bucket)))
+					(else (cons (car bucket) (loop (cdr bucket))))))))
+		  (else (error 'hash-table "unrecognized message")) ))))))
 
     ;; The most common data type used for hash-table keys is character
     ;; strings, for which we provide this hash function:
@@ -101,8 +100,8 @@
     (define (string-hash str)
       (let loop ((cs (string->list str)) (s 0))
         (if (null? cs) s
-          (loop (cdr cs) (+ (* s 31)
-                           (char->integer (car cs)))))))
+	    (loop (cdr cs) (+ (* s 31)
+			      (char->integer (car cs)))))))
 
     ;; The list->hash function returns a newly-allocated hash table
     ;; containing each of the key/value pairs in the input list, where

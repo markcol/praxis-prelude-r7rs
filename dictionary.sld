@@ -1,14 +1,11 @@
 ;; -*-  scheme -*-
-
 ;; From http://programmingpraxis.com/contents/standard-prelude/
 
 (define-library (praxis dictionary)
-  (import (scheme base)
-          (rnrs syntax-case))
+  (import (scheme base))
   (export make-dict tree key val lkid ht size bal nil nil? rot-left rot-right
           balance lookup insert update delete-successor delete nth rank avl-map
           avl-fold avl-for-each to-list from-list make-gen new dispatch)
-
   (begin
     ;; Make-dict provides the abstract data type of an ordered map,
     ;; sometimes called a dictionary. Unlike hash tables that only
@@ -48,11 +45,14 @@
     ;; delete key — returns a newly-allocated dictionary in which key
     ;; is not present, whether or not it is already present [remove]
 
-    ;; size — returns the number of key/value pairs in the dictionary [count, length]
+    ;; size — returns the number of key/value pairs in the dictionary
+    ;; [count, length]
 
-    ;; nth n — returns the nth key/value pair in the dictionary, counting from zero
+    ;; nth n — returns the nth key/value pair in the dictionary,
+    ;; counting from zero
 
-    ;; rank key — returns the ordinal position of key in the dictionary, counting from zero
+    ;; rank key — returns the ordinal position of key in the
+    ;; dictionary, counting from zero
 
     ;; map proc — returns a newly-allocated dictionary in which each
     ;; value is replaced by (proc k v), where k and v are the existing
@@ -84,30 +84,30 @@
     ;; square brackets above.
 
     (define (make-dict lt?)
-
-      (define-syntax define-generator
-        (lambda (x)
-          (syntax-case x (lambda)
-            ((stx name (lambda formals e0 e1 ...))
-              (with-syntax ((yield (datum->syntax-object (syntax stx) 'yield)))
-                (syntax (define name
-                          (lambda formals
-                            (let ((resume #f) (return #f))
-                              (define yield
-                                (lambda args
-                                  (call-with-current-continuation
-                                    (lambda (cont)
-                                      (set! resume cont)
-                                      (apply return args)))))
-                              (lambda ()
-                                (call-with-current-continuation
-                                  (lambda (cont)
-                                    (set! return cont)
-                                    (cond (resume (resume))
-                                      (else (let () e0 e1 ...)
-                                        (error 'name "unexpected return"))))))))))))
-            ((stx (name . formals) e0 e1 ...)
-              (syntax (stx name (lambda formals e0 e1 ...)))))))
+      
+    ;;   (define-syntax define-generator
+    ;;     (lambda (x)
+    ;;       (syntax-case x (lambda)
+    ;;         ((stx name (lambda formals e0 e1 ...))
+    ;;           (with-syntax ((yield (datum->syntax-object (syntax stx) 'yield)))
+    ;;             (syntax (define name
+    ;;                       (lambda formals
+    ;;                         (let ((resume #f) (return #f))
+    ;;                           (define yield
+    ;;                             (lambda args
+    ;;                               (call-with-current-continuation
+    ;;                                 (lambda (cont)
+    ;;                                   (set! resume cont)
+    ;;                                   (apply return args)))))
+    ;;                           (lambda ()
+    ;;                             (call-with-current-continuation
+    ;;                               (lambda (cont)
+    ;;                                 (set! return cont)
+    ;;                                 (cond (resume (resume))
+    ;;                                   (else (let () e0 e1 ...)
+    ;;                                     (error 'name "unexpected return"))))))))))))
+    ;;         ((stx (name . formals) e0 e1 ...)
+    ;;           (syntax (stx name (lambda formals e0 e1 ...)))))))
 
       (define (tree k v l r)
         (vector k v l r (+ (max (ht l) (ht r)) 1)
@@ -272,5 +272,5 @@
           (else (error 'dict "invalid message"))))
 
       (vector-set! nil 2 nil) (vector-set! nil 3 nil) (new nil))
-
+    
     ))
